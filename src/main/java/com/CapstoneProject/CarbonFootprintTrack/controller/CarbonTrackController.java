@@ -1,14 +1,20 @@
 package com.CapstoneProject.CarbonFootprintTrack.controller;
 
 import com.CapstoneProject.CarbonFootprintTrack.ResponseDto.*;
+import com.CapstoneProject.CarbonFootprintTrack.entities.CarbonFootprintForm;
 import com.CapstoneProject.CarbonFootprintTrack.model.CarbonFootPrint;
 import com.CapstoneProject.CarbonFootprintTrack.model.UserDetails;
+import com.CapstoneProject.CarbonFootprintTrack.model.leaderBoard;
 import com.CapstoneProject.CarbonFootprintTrack.service.CarbonTrackService;
+import com.CapstoneProject.CarbonFootprintTrack.service.LeaderBoardService;
 import com.CapstoneProject.CarbonFootprintTrack.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+//import reactor.core.publisher.Flux;
+//import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/carbonTrack")
@@ -19,56 +25,61 @@ public class CarbonTrackController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LeaderBoardService  leaderBoardService;
+
     @PostMapping("/Register")
-    public Mono<UserDetails> addUser(UserDetails userDetails){
-        return userService.UserRegister(userDetails);
+    public String addUser(RegisterDto registerDto){
+        return userService.UserRegister(registerDto);
     }
 
-//    @PostMapping("/login")
-//    public Mono<UserDetails> loginUser(UserDetails userDetails){
-//        return userService.loginUser(userDetails);
-//    }
+    @GetMapping("/profile")
+    public UserDto  getUserProfile(@RequestParam Long userId){
+        return userService.getUserProfile(userId);
+    }
+
 
     @GetMapping("/allUsers")
-    public Flux<UserDetails> getAllUsers(){
+    public List<UserDetails> getAllUsers(){
         return userService.getAllUsers();
     }
 
-    @PostMapping("/carbondetails")
-    public Mono<CarbonFootPrint> addCarbonDetails(CarbonFootPrint carbonFootPrint){
-        return carbonTrackService.addCarbonDetails(carbonFootPrint);
-    }
 
     @GetMapping("/allcarbondetails")
-    public Flux<CarbonFootPrint> getAllCarbonDetails(){
+    public List<CarbonFootPrint> getAllCarbonDetails(){
         return carbonTrackService.getAllCarbonDetails();
     }
 
    @GetMapping("/user/{userId}/dashboard")
-    public Flux<DashboardResponseDto> getdashboard(@PathVariable Long userId){
-        return carbonTrackService.getdashboard(userId);
+    public List<DashboardResponseDto> getdashboard(@PathVariable Long userId){
+        return carbonTrackService.getDashboard(userId);
    }
 
    @GetMapping("/user/{userId}/electricity")
-    public Flux<ElectricityDto> getcarbonfootprint(@PathVariable Long userId){
-        return carbonTrackService.getcarbonfootprint(userId);
+    public List<ElectricityDto> getcarbonfootprint(@PathVariable Long userId){
+        return carbonTrackService.getElectricityCarbonFootprint(userId);
    }
 
    @GetMapping("/user/{userId}/wastage")
-    public Flux<WastageDto> getwastage(@PathVariable Long userId){
-        return carbonTrackService.getwastage(userId);
+    public List<WastageDto> getwastage(@PathVariable Long userId){
+        return carbonTrackService.getWastageCarbonFootprint(userId);
    }
 
    @GetMapping("/user/{userId}/transportation")
-    public Flux<TransportationDto> getTransportation(@PathVariable Long userId){
+    public List<TransportationDto> getTransportation(@PathVariable Long userId){
         return carbonTrackService.getTransportation(userId);
    }
 
-   @GetMapping("/leaderBoard")
-    public Flux<LeaderBoardDto> getLeaderBoard(){
-        return carbonTrackService.getLeaderBoard();
+   @GetMapping("/leaderBoard/{city}")
+    public List<leaderBoard> getLeaderBoard(@PathVariable String city){
+        return leaderBoardService.getLeaderBoard(city);
    }
 
+
+    @PostMapping("/calculateAndSubmit")
+    public ResponseEntity<String> calculateAndSubmit(@RequestBody CarbonFootprintForm form) {
+        return carbonTrackService.calculateAndSubmit(form);
+    }
 
 
 }

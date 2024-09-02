@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class LeaderBoardDto {
+public class RegisterDto {
     private String username;
-    private double totalCarbonFootprint;
+    private String password;
+    private String confirm_password;
+    private String email;
     private String city;
-    private String date;
 }

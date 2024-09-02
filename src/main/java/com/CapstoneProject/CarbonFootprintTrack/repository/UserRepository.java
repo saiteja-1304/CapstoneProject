@@ -1,8 +1,13 @@
 package com.CapstoneProject.CarbonFootprintTrack.repository;
 
 import com.CapstoneProject.CarbonFootprintTrack.model.UserDetails;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RestController;
 
-public interface UserRepository extends ReactiveMongoRepository<UserDetails,String> {
+@Repository
+public interface UserRepository extends JpaRepository<UserDetails,Long> {
     UserDetails findById(long userId);
+
+    boolean existsByUsername(String username);
 }
