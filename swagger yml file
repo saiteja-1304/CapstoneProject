@@ -1,0 +1,384 @@
+openapi: 3.0.0
+info:
+  title: Carbon Footprint Tracking API
+  description: API for tracking carbon footprints.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /carbonTrack/Register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        description: User registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                confirm_password:
+                  type: string
+                email:
+                  type: string
+                city:
+                  type: string
+              required:
+                - username
+                - password
+                - confirm_password
+                - email
+                - city
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /carbonTrack/profile:
+    get:
+      summary: Get user profile
+      operationId: getUserProfile
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      responses:
+        '200':
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  city:
+                    type: string
+                  totalCarbonFootprint:
+                    type: number
+                  logged_in:
+                    type: boolean
+                required:
+                  - name
+                  - email
+                  - city
+        '404':
+          description: User not found
+
+  /carbonTrack/allUsers:
+    get:
+      summary: Get all users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    username:
+                      type: string
+                    password:
+                      type: string
+                    email:
+                      type: string
+                    logged_in:
+                      type: boolean
+                    totalCarbonFootprint:
+                      type: number
+                    city:
+                      type: string
+                  required:
+                    - id
+                    - username
+                    - password
+
+  /carbonTrack/allcarbondetails:
+    get:
+      summary: Get all carbon details
+      operationId: getAllCarbonDetails
+      responses:
+        '200':
+          description: List of all carbon details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    userId:
+                      type: integer
+                    username:
+                      type: string
+                    today_date:
+                      type: string
+                      format: date
+                    city:
+                      type: string
+                    transportation:
+                      type: number
+                    electricity:
+                      type: number
+                    wastage:
+                      type: number
+                    carbon_footprint:
+                      type: number
+                    total_carbon_footprint:
+                      type: number
+                  required:
+                    - id
+                    - userId
+                    - username
+                    - today_date
+                    - city
+
+  /carbonTrack/user/{userId}/dashboard:
+    get:
+      summary: Get user dashboard
+      operationId: getDashboard
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      responses:
+        '200':
+          description: Dashboard retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    totalCarbonFootprint:
+                      type: number
+                  required:
+                    - date
+                    - totalCarbonFootprint
+        '404':
+          description: User not found
+
+  /carbonTrack/user/{userId}/electricity:
+    get:
+      summary: Get electricity carbon footprint
+      operationId: getElectricity
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      responses:
+        '200':
+          description: Electricity carbon footprint retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    electricity:
+                      type: number
+                  required:
+                    - date
+                    - electricity
+        '404':
+          description: User not found
+
+  /carbonTrack/user/{userId}/wastage:
+    get:
+      summary: Get wastage carbon footprint
+      operationId: getWastage
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      responses:
+        '200':
+          description: Wastage carbon footprint retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    wastage:
+                      type: number
+                  required:
+                    - date
+                    - wastage
+        '404':
+          description: User not found
+
+  /carbonTrack/user/{userId}/transportation:
+    get:
+      summary: Get transportation carbon footprint
+      operationId: getTransportation
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      responses:
+        '200':
+          description: Transportation carbon footprint retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    transportation:
+                      type: number
+                  required:
+                    - date
+                    - transportation
+        '404':
+          description: User not found
+
+  /carbonTrack/leaderBoard/{city}:
+    get:
+      summary: Get leaderboard for a city
+      operationId: getLeaderBoard
+      parameters:
+        - name: city
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the city
+      responses:
+        '200':
+          description: Leaderboard retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: integer
+                    username:
+                      type: string
+                    today_date:
+                      type: string
+                    city:
+                      type: string
+                    total_carbon_footprint:
+                      type: number
+                  required:
+                    - userId
+                    - username
+                    - city
+        '404':
+          description: City not found
+
+  /carbonTrack/calculateAndSubmit:
+    post:
+      summary: Calculate and submit carbon footprint
+      operationId: calculateAndSubmit
+      requestBody:
+        description: Carbon footprint calculation details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                city:
+                  type: string
+                username:
+                  type: string
+                transportations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      mode:
+                        type: string
+                      distance:
+                        type: number
+                      time:
+                        type: number
+                    required:
+                      - mode
+                      - distance
+                wastages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      wetWaste:
+                        type: number
+                      dryWaste:
+                        type: number
+                    required:
+                      - wetWaste
+                      - dryWaste
+                prevWatts:
+                  type: integer
+                todayWatts:
+                  type: integer
+              required:
+                - userId
+                - date
+                - city
+                - username
+      responses:
+        '200':
+          description: Calculation and submission successful
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid input
